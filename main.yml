@@ -1,0 +1,46 @@
+-
+ name: install kubernetes 
+ hosts:  [kuber]
+ become: true
+ roles:
+   - swap
+   - sanction
+   - docker
+   - sanction
+   - kubeadm
+
+-
+  name: initial cluster on master
+  hosts: [kube.master]
+  become: true
+  roles:
+    - init
+
+  tasks:
+    - name: get token
+      command: kubeadm token create --print-join-command
+      register: join
+      run_once: true
+
+    - add_host:
+        name: "[kube.master]"
+        join_token: "{{ join.stdout }}"
+   
+- 
+  name: join nodes
+  hosts: [kube.node]
+  become: true
+  tasks:
+    - debug: 
+        msg: "{{ hostvars['[kube.master]']['join_token']  }}"
+
+      
+    - name: Join to Kubernetes cluster
+      shell: "{{ hostvars['[kube.master]']['join_token']  }}"
+      register: join_cluster
+
+    - name: token 
+      debug:
+        msg: "{{ join_cluster }}"
+
+

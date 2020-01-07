@@ -1,0 +1,10 @@
+---
+# handlers file for kubeadm
+
+
+- name: Update all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+  listen: "update all"
