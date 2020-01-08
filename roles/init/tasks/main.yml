@@ -8,10 +8,11 @@
   ignore_errors: True
 
 - name: fail the play if the previous command did not succeed
-  when: "'localhost:8080 was refused' in result.stderr"
+  when: "'refused' in result.stderr"
   block:
 
     - name: initial cluster
+      become: true
       shell: |
         kubeadm init --pod-network-cidr {{ pod_network_cidr }} \
                   --apiserver-advertise-address {{ ansible_default_ipv4.address }} \
@@ -26,6 +27,7 @@
 
     - name: Copy admin.conf to Home directory
       when: init_cluster is succeeded
+      become: true
       copy:
         src: /etc/kubernetes/admin.conf
         dest: "{{ ansible_env.HOME  }}/.kube/config"
@@ -35,7 +37,7 @@
         remote_src: true
 
 - name: Deploy kubernetes dashboard into cluster
+  become: true
   shell: |
      kubectl --kubeconfig=/etc/kubernetes/admin.conf  apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
 
-  

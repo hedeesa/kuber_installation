@@ -12,7 +12,6 @@
 -
   name: initial cluster on master
   hosts: [kube.master]
-  become: true
   roles:
     - init
 
