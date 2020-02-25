@@ -1,6 +1,12 @@
 ---
 # tasks file for kubeadm
 
+- include_role:
+    name: swap
+
+- include_role:
+    name: sanction
+
 - name: update 
   apt:
     name: "*" 

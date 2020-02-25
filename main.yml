@@ -3,11 +3,8 @@
  hosts:  [kuber]
  become: true
  roles:
-   - swap
-   - sanction
-   - docker
-   - sanction
-   - kubeadm
+    - docker
+    - kubeadm
 
 -
   name: initial cluster on master
